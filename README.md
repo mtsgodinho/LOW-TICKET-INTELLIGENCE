@@ -56,7 +56,7 @@ A chave usa `x-goog-api-key` em chamadas HTTPS para `generativelanguage.googleap
 
 A fonte ativa é o levantamento fornecido pelo proprietário: cadastro manual ou JSON. **Minerar Produtos filtra o acervo salvo; não descobre anúncios pela internet.** Faça a pesquisa permitida na Biblioteca pública, registre os dados observados e suas evidências, importe, depois filtre. Links são referências, não são coletados automaticamente. Consulte [fontes](docs/fontes.md) e [ranking](docs/arquitetura.md).
 
-Nenhuma API Meta comercial foi declarada funcional. Não há scraping, bypass de CAPTCHA, navegador automatizado de coleta nem conexão com contas de anúncios. A consulta à documentação oficial ficou bloqueada pela rede nesta tarefa; a elegibilidade atual para anúncios comerciais brasileiros permanece sem confirmação.
+Nenhuma API Meta comercial foi declarada funcional. Não há scraping, bypass de CAPTCHA, navegador automatizado de coleta nem conexão com contas de anúncios. A referência oficial ads_archive foi consultada: anúncios sem alcance na União Europeia só são retornados pela API se forem sobre temas sociais, eleições ou política. Portanto, não há cobertura geral de ofertas comerciais que atingiram apenas o Brasil. Veja docs/fontes.md.
 
 ## Teste do proprietário após configurar
 

@@ -10,7 +10,7 @@ Interface implementada não significa operação remota homologada. Não há dad
 
 - Supabase: URL recebida e salva no rascunho. Ainda faltam `SUPABASE_ANON_KEY`, `ADMIN_USER_ID`, conta administrativa e aplicação da migration. Não houve conexão autenticada, login real nem gravação no projeto informado.
 - Gemini: chave ausente. Contrato e tratamento de falhas foram testados com mocks, mas geração real, quota e disponibilidade do modelo não foram verificadas.
-- Meta: documentação oficial bloqueada pelo proxy (403). APIs, permissões e cobertura atual de comerciais brasileiros não confirmadas. Não existe integração Meta ativa. Domínios necessários foram incluídos no rascunho; salvar o rascunho não modifica a rede atual.
+- Meta: a referência oficial ads_archive foi acessada posteriormente (HTTP 200) e restringe anúncios sem alcance na UE aos temas sociais, eleições e política. Não atende à mineração geral de ofertas comerciais voltadas apenas ao Brasil. A página de onboarding da API permaneceu bloqueada (403); requisitos completos de permissões não foram confirmados. Não existe integração Meta ativa. Domínios necessários foram incluídos no rascunho; salvar o rascunho não modifica a rede atual.
 - Pesquisa real: não foi fornecido um levantamento autorizado de ofertas reais para importar e conferir. O aplicativo permanece vazio. A mineração implementada pesquisa o acervo do proprietário; não busca a internet.
 
 Nenhum segredo deve ser enviado no chat. Preencha os valores nas configurações seguras do ambiente, revise e salve; publique o ambiente quando desejar disponibilizar o snapshot. Uma publicação ou uma nova tarefa não foi validada nesta sessão.

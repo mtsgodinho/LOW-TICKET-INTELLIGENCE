@@ -1135,9 +1135,9 @@ export default function Dashboard({
                       Biblioteca de Anúncios da Meta
                     </p>
                     <p className="muted">
-                      Acesso comercial brasileiro por API não foi confirmado.
-                      Pesquisa pública pode ser feita manualmente conforme as
-                      regras da Meta.
+                      A API não cobre anúncios comerciais que atingiram apenas o
+                      Brasil. Pesquisa pública pode ser feita manualmente
+                      conforme as regras da Meta.
                     </p>
                     <Out href="https://www.facebook.com/ads/library/">
                       Abrir Biblioteca de Anúncios

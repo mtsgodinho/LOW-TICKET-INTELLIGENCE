@@ -8,9 +8,13 @@ Referências oficiais a consultar antes de habilitar qualquer integração:
 - https://www.facebook.com/ads/library/api/
 - https://www.facebook.com/ads/library/
 
-A tentativa de acesso à primeira referência retornou HTTP 403 do proxy de rede deste ambiente. Foi salva a necessidade de liberar os domínios oficiais no rascunho, mas isso não comprova aplicação da política em execução. Não foi possível confirmar nesta tarefa a documentação atual, categorias cobertas, países, permissões, verificação de identidade, token e elegibilidade. Esses itens continuam pendentes de pesquisa oficial antes de qualquer implementação de API.
+Na investigação inicial, a documentação estava bloqueada pela rede. Na verificação posterior desta sessão, o endpoint oficial de referência `ads_archive` respondeu HTTP 200 e foi consultado. Na descrição de `ad_reached_countries`, a Meta informa: **“Ads that did not reach any location in the EU will only return if they are about social issues, elections or politics.”**
 
-O acesso público no navegador não estabelece acesso equivalente por API. Não presumimos cobertura de todos os anúncios comerciais brasileiros. Não existe conector oficial ativo neste projeto e não são necessárias credenciais Meta na Fase 1 atual. Não há login automatizado, scraping da biblioteca, quebra de bloqueios ou uso de serviços não autorizados.
+Consequência: anúncios comerciais comuns que atingiram apenas o Brasil não são cobertos por essa consulta. A presença de BR na enumeração de países e de ALL em ad_type não remove a restrição de cobertura. Não é tecnicamente correto oferecer mineração geral de low ticket brasileiro via essa API.
+
+A referência documenta busca por termos, país alcançado, status e datas. A consulta exige access_token; a página específica de onboarding da API ainda retornou HTTP 403, portanto requisitos completos atuais de elegibilidade e permissões não foram confirmados. Não solicitamos token Meta para uma integração que não atende ao objetivo. Acesso à API de campanhas do próprio anunciante também não fornece acesso geral aos concorrentes.
+
+O acesso público no navegador não estabelece acesso equivalente por API. Não existe conector oficial ativo neste projeto. Não há login automatizado, scraping da biblioteca, quebra de bloqueios ou uso de serviços não autorizados. Para a Fase 1 no Brasil, permanece disponível a alternativa de levantamento manual/importação de fontes permitidas.
 
 ## Fluxo funcional de alternativa permitida
 
