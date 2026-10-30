@@ -25,6 +25,21 @@ const make = (extra: object = {}): Offer => ({
   verified_at: null,
 });
 describe("dados e ranking", () => {
+  it.each([
+    {},
+    { adUrl: "", salesUrl: "", mediaUrl: "" },
+    { adUrl: null, salesUrl: null, mediaUrl: null },
+    { adUrl: "https://www.facebook.com/ads/library/?id=123", salesUrl: null },
+  ])("revalida oferta persistida com links opcionais: %j", (links) => {
+    const saved = offerSchema.parse({ ...input, ...links });
+    const loaded = offerSchema.parse(JSON.parse(JSON.stringify(saved)));
+    expect(loaded).toEqual(saved);
+    for (const field of ["adUrl", "salesUrl", "mediaUrl"] as const)
+      expect(loaded[field] === null || typeof loaded[field] === "string").toBe(
+        true,
+      );
+  });
+
   it("preserva desconhecidos e não inventa preço ou anúncios", () => {
     const o = make();
     expect(o.price).toBeNull();

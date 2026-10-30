@@ -51,7 +51,7 @@ export const publicUrl = z
   }, "Use uma URL HTTPS pública, sem credenciais, porta ou fragmento.");
 const link = z
   .union([publicUrl, z.literal("")])
-  .optional()
+  .nullish()
   .transform((v) => v || null);
 export const offerSchema = z.object({
   name: z.string().trim().min(2).max(160),
