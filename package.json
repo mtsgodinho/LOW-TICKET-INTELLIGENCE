@@ -1,0 +1,39 @@
+{
+  "name": "low-ticket-intelligence",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --hostname 0.0.0.0",
+    "build": "next build --webpack",
+    "start": "next start --hostname 0.0.0.0",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "format": "prettier --write src tests docs README.md *.ts *.mjs package.json",
+    "test:browser": "playwright test"
+  },
+  "dependencies": {
+    "@supabase/ssr": "latest",
+    "@supabase/supabase-js": "latest",
+    "lucide-react": "latest",
+    "next": "16.4.3",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "zod": "latest"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "0.5.13",
+    "@playwright/test": "latest",
+    "@tailwindcss/postcss": "latest",
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "eslint": "latest",
+    "eslint-config-next": "16.4.3",
+    "prettier": "3.9.10",
+    "tailwindcss": "latest",
+    "typescript": "latest",
+    "vitest": "latest"
+  },
+  "type": "module"
+}
