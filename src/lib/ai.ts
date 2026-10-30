@@ -104,11 +104,77 @@ export class GeminiProvider implements AIProvider {
     ).catch(() => {
       throw new AppError(502, "Gemini indisponível ou tempo limite excedido.");
     });
-    if (!response.ok)
+    if (!response.ok) {
+      // Never return the provider's raw message: it may echo request content.
+      let reason = "";
+      try {
+        const payload: unknown = await response.json();
+        const details = z
+          .object({
+            error: z.object({
+              details: z
+                .array(z.object({ reason: z.string().optional() }))
+                .optional(),
+            }),
+          })
+          .safeParse(payload);
+        const knownReasons = [
+          "API_KEY_INVALID",
+          "API_KEY_EXPIRED",
+          "API_KEY_SERVICE_BLOCKED",
+          "API_KEY_HTTP_REFERRER_BLOCKED",
+          "API_KEY_IP_ADDRESS_BLOCKED",
+          "SERVICE_DISABLED",
+        ];
+        reason = details.success
+          ? details.data.error.details
+              ?.map((d) => d.reason)
+              .find((r) => r && knownReasons.includes(r)) || ""
+          : "";
+      } catch {
+        /* Non-JSON provider/proxy response; use HTTP status only. */
+      }
+      const prefix = `Gemini (HTTP ${response.status})`;
+      if (reason === "API_KEY_INVALID" || reason === "API_KEY_EXPIRED")
+        throw new AppError(
+          502,
+          `${prefix}: chave inválida ou expirada. Confira GEMINI_API_KEY na Vercel e faça um novo deploy após corrigir.`,
+        );
+      if (reason === "SERVICE_DISABLED")
+        throw new AppError(
+          502,
+          `${prefix}: API desativada no projeto Google associado à chave. Habilite a Generative Language API nesse projeto.`,
+        );
+      if (reason.startsWith("API_KEY_"))
+        throw new AppError(
+          502,
+          `${prefix}: uma restrição da chave bloqueou o acesso pelo servidor. Confira as restrições no projeto Google; a chamada sai do backend da Vercel.`,
+        );
+      if (response.status === 429)
+        throw new AppError(
+          429,
+          `${prefix}: limite de requisições ou quota do projeto/modelo excedido. Consulte Usage e Rate limits no Google AI Studio; quota zero exige verificar a disponibilidade do plano.`,
+        );
+      if (response.status === 404)
+        throw new AppError(
+          502,
+          `${prefix}: modelo ${model} indisponível neste endpoint ou para esta conta. Confira os modelos disponíveis e configure GEMINI_MODEL na Vercel.`,
+        );
+      if (response.status === 403)
+        throw new AppError(
+          502,
+          `${prefix}: acesso negado. Confira permissões, restrições da chave e disponibilidade regional no projeto Google.`,
+        );
+      if (response.status === 400)
+        throw new AppError(
+          502,
+          `${prefix}: solicitação rejeitada. Verifique a compatibilidade do modelo ${model}, o conteúdo enviado e a configuração do projeto Google.`,
+        );
       throw new AppError(
-        response.status === 429 ? 429 : 502,
-        "O provedor Gemini recusou a análise. Verifique chave, modelo, quota e conectividade.",
+        502,
+        `${prefix}: serviço indisponível ou falha de comunicação com o provedor. Tente novamente mais tarde.`,
       );
+    }
     const result = await response.json();
     const candidate = result.candidates?.[0];
     if (candidate?.finishReason !== "STOP")

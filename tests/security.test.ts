@@ -103,6 +103,42 @@ describe("proteção das APIs", () => {
   });
 });
 describe("Gemini (contrato testado com mocks, sem chamada real)", () => {
+  it.each([
+    [400, "API_KEY_INVALID", "chave inválida"],
+    [403, "API_KEY_HTTP_REFERRER_BLOCKED", "restrição da chave"],
+    [403, "SERVICE_DISABLED", "API desativada"],
+    [403, "", "acesso negado"],
+    [404, "", "modelo gemini-2.5-flash indisponível"],
+    [429, "", "quota"],
+    [400, "", "solicitação rejeitada"],
+    [503, "", "serviço indisponível"],
+  ])(
+    "classifica erro HTTP %s %s sem expor resposta bruta",
+    async (status, reason, expected) => {
+      vi.stubEnv("GEMINI_API_KEY", "test-only");
+      vi.stubEnv("GEMINI_MODEL", "gemini-2.5-flash");
+      vi.stubGlobal(
+        "fetch",
+        vi
+          .fn()
+          .mockResolvedValue({
+            ok: false,
+            status,
+            json: async () => ({
+              error: {
+                message: "SENSITIVE_REQUEST_ECHO",
+                details: [{ reason }],
+              },
+            }),
+          }),
+      );
+      const error = await new GeminiProvider().analyze("teste").catch((e) => e);
+      expect(error.message).toContain(expected);
+      expect(error.message).toContain(`HTTP ${status}`);
+      expect(error.message).not.toContain("SENSITIVE_REQUEST_ECHO");
+    },
+  );
+
   it("falha explicitamente sem chave", async () => {
     vi.stubEnv("GEMINI_API_KEY", "");
     await expect(new GeminiProvider().analyze("teste")).rejects.toMatchObject({
@@ -117,19 +153,17 @@ describe("Gemini (contrato testado com mocks, sem chamada real)", () => {
         { fatos: [], hipoteses: ["Hipótese de teste"], recomendacoes: [] },
       ]),
     );
-    const fetch = vi
-      .fn()
-      .mockResolvedValue({
-        ok: true,
-        json: async () => ({
-          candidates: [
-            {
-              finishReason: "STOP",
-              content: { parts: [{ text: JSON.stringify(report) }] },
-            },
-          ],
-        }),
-      });
+    const fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        candidates: [
+          {
+            finishReason: "STOP",
+            content: { parts: [{ text: JSON.stringify(report) }] },
+          },
+        ],
+      }),
+    });
     vi.stubGlobal("fetch", fetch);
     expect(
       await new GeminiProvider().analyze(
